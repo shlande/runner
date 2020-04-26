@@ -44,7 +44,7 @@ func (t *taskrunner) AfterRun(task *Task) {
 }
 
 // 注册方法
-func (t *taskrunner) SetHandler(handler Handler) {
+func (t *taskrunner) AddHandler(handler Handler) {
 	for _, tp := range handler.MatchType() {
 		if _, ok := t.handlers[tp]; ok {
 			panic("重复加载处理方法：" + tp)
