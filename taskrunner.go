@@ -5,10 +5,6 @@ import "context"
 type Taskrunner interface {
 	// 启动进程
 	Run(ctx context.Context)
-	// 任务开始前的钩子函数
-	BeforeRun(task *Task)
-	// 任务完成后的钩子函数
-	AfterRun(task *Task)
 	// 设置任务处理器
 	AddHandler(handler Handler)
 	// 获取输入管道
@@ -16,3 +12,9 @@ type Taskrunner interface {
 	// 获取输出管道
 	GetOutputChan() <-chan Task
 }
+
+// 内置处理方法
+const (
+	BEFORERUN TaskType = "INNER_BEFORERUN"
+	AFTERRUN  TaskType = "INNER_AFTERRUN"
+)

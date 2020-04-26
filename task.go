@@ -26,7 +26,31 @@ type Task interface {
 
 type TaskBase struct {
 	Id     string                 `json:"id"`
-	Status int                    `json:"status"`
-	Type   string                 `json:"type"`
+	Status Status                 `json:"status"`
+	Type   TaskType               `json:"type"`
 	Data   map[string]interface{} `json:"data"`
+}
+
+func NewTaskBase(id string, taskType TaskType, data map[string]interface{}) *TaskBase {
+	return &TaskBase{Id: id, Type: taskType, Data: data}
+}
+
+func (t TaskBase) GetId() string {
+	return t.Id
+}
+
+func (t TaskBase) GetStatus() Status {
+	return t.Status
+}
+
+func (t TaskBase) SetStatus(status Status) {
+	t.Status = status
+}
+
+func (t TaskBase) GetType() TaskType {
+	return t.Type
+}
+
+func (t TaskBase) GetData() TaskData {
+	return t.Data
 }

@@ -21,8 +21,10 @@ func (t *taskrunner) Run(ctx context.Context) {
 		case task := <-t.inputChan:
 			t.wait.Add(1)
 			go func() {
-				t.handlers[task.GetType()](ctx, task)
-				defer t.wait.Done()
+				ts := t.beforeRun(ctx, task)
+				ts = t.handlers[task.GetType()](ctx, ts)
+				t.outputChan <- t.afterRun(context.TODO(), ts)
+				t.wait.Done()
 			}()
 		}
 	}
@@ -34,13 +36,19 @@ EXIT:
 }
 
 // 需要被重写的方法
-func (t *taskrunner) BeforeRun(task *Task) {
-	return
+func (t *taskrunner) beforeRun(ctx context.Context, task Task) Task {
+	if fu, ok := t.handlers[BEFORERUN]; ok {
+		return fu(ctx, task)
+	}
+	return task
 }
 
 // 需要被重写的方法
-func (t *taskrunner) AfterRun(task *Task) {
-	return
+func (t *taskrunner) afterRun(ctx context.Context, task Task) Task {
+	if fu, ok := t.handlers[AFTERRUN]; ok {
+		return fu(ctx, task)
+	}
+	return task
 }
 
 // 注册方法
